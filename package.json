@@ -63,7 +63,7 @@
       ],
       "import/no-unresolved": "off",
       "import/extensions": [
-        "error",
+        "warn",
         "always",
         {
           "ignorePackages": true
