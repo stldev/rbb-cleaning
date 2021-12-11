@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 
-const logo = new URL('../../assets/open-wc-logo.svg', import.meta.url).href;
+// const logo = new URL('../../assets/open-wc-logo.svg', import.meta.url).href;
 
 export class RbbCleaning extends LitElement {
   @property({ type: String }) title = 'My app';
@@ -25,20 +25,6 @@ export class RbbCleaning extends LitElement {
       flex-grow: 1;
     }
 
-    .logo {
-      margin-top: 36px;
-      animation: app-logo-spin infinite 20s linear;
-    }
-
-    @keyframes app-logo-spin {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
     .app-footer {
       font-size: calc(12px + 0.5vmin);
       align-items: center;
@@ -52,7 +38,6 @@ export class RbbCleaning extends LitElement {
   render() {
     return html`
       <main>
-        <div class="logo"><img alt="open-wc logo" src=${logo} /></div>
         <h1>${this.title}</h1>
 
         <p>Edit <code>src/RbbCleaning.ts</code> and save to reload.</p>

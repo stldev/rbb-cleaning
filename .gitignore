@@ -84,7 +84,7 @@ node_modules/
 
 # build
 /_site/
-/dist/
+/public/
 /out-tsc/
 
 storybook-static
