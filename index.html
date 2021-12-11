@@ -17,211 +17,22 @@
         margin: 0;
         padding: 0;
       }
-      #message {
-        background: white;
-        max-width: 360px;
-        margin: 100px auto 16px;
-        padding: 32px 24px;
-        border-radius: 3px;
-      }
-      #message h2 {
-        color: #ffa100;
-        font-weight: bold;
-        font-size: 16px;
-        margin: 0 0 8px;
-      }
-      #message h1 {
-        font-size: 22px;
-        font-weight: 300;
-        color: rgba(0, 0, 0, 0.6);
-        margin: 0 0 16px;
-      }
-      #message p {
-        line-height: 140%;
-        margin: 16px 0 24px;
-        font-size: 14px;
-      }
-      #message a {
-        display: block;
-        text-align: center;
-        background: #039be5;
-        text-transform: uppercase;
-        text-decoration: none;
-        color: white;
-        padding: 16px;
-        border-radius: 4px;
-      }
-      #message,
-      #message a {
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-      }
-      #load {
-        color: rgba(0, 0, 0, 0.4);
-        text-align: center;
-        font-size: 13px;
-      }
       @media (max-width: 600px) {
-        body,
-        #message {
-          margin-top: 0;
-          background: white;
-          box-shadow: none;
-        }
         body {
+          margin-top: 0;
+          box-shadow: none;
           border-top: 16px solid #ffa100;
         }
       }
     </style>
 
     <title>rbb-cleaning</title>
-    <script
-      defer
-      src="https://rbb-cleaning.web.app/__/firebase/9.4.1/firebase-app-compat.js"
-    ></script>
-    <script
-      defer
-      src="https://rbb-cleaning.web.app/__/firebase/9.4.1/firebase-auth-compat.js"
-    ></script>
-    <script
-      defer
-      src="https://rbb-cleaning.web.app/__/firebase/9.4.1/firebase-database-compat.js"
-    ></script>
-    <script
-      defer
-      src="https://rbb-cleaning.web.app/__/firebase/init.js?useEmulator=true"
-    ></script>
   </head>
 
   <body>
-    <div id="message">
-      <h2 id="emailDisplay">anonymous</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>
-        You're seeing this because you've successfully setup Firebase Hosting.
-      </p>
-      <button onclick="addItem()">Add Item</button>
-      <div id="loginForm" style="display: none">
-        email: <input id="userEmail" type="text" /> <br />
-        pass: <input id="userPass" type="password" /> <br />
-        <button onclick="doUserLogin()">doUserLogin</button>
-      </div>
-    </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
-
-    <hr />
-
     <rbb-cleaning></rbb-cleaning>
 
-    <script>
-      var loginFormEle = document.getElementById('loginForm');
-      var emailEle = document.getElementById('userEmail');
-      var passwordEle = document.getElementById('userPass');
-      var emailDisplayEle = document.getElementById('emailDisplay');
-
-      document.addEventListener('DOMContentLoaded', function () {
-        const loadEl = document.querySelector('#load');
-        // // The Firebase SDK is initialized and available here!
-        //
-        firebase.auth().onAuthStateChanged(user => {
-          console.log('onAuthStateChanged-user', user);
-
-          if (user?.email) {
-            emailDisplayEle.innerHTML = user.email;
-          } else {
-            loginFormEle.style.display = 'block';
-          }
-        });
-        firebase
-          .database()
-          // .ref("/path/to/ref")
-          .ref('/data')
-          .on('value', snapshot => {
-            console.log('database-value-snapshot', snapshot);
-            console.log('---------------------------');
-            console.log(snapshot.val());
-          });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth',
-            'database',
-            // "firestore",
-            // "functions",
-            // "messaging",
-            // "storage",
-            // "analytics",
-            // "remoteConfig",
-            // "performance",
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(
-            ', '
-          )}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent =
-            'Error loading the Firebase SDK, check the console.';
-        }
-      });
-
-      function addItem() {
-        console.log('TODO');
-        // // A post entry.
-        // var postData = {
-        //   area:  `foo-${Date.now()}`,
-        // };
-        // // Get a key for a new Post.
-        // // var newPostKey = firebase.database().ref().child("data").push().key;
-        // // Write the new post's data simultaneously in the posts list and the user's post list.
-        // var updates = {};
-        // updates["/posts/" + newPostKey] = postData;
-        // updates["/user-posts/" + uid + "/" + newPostKey] = postData;
-        // return firebase.database().ref().update(updates);
-        // firebase
-        //   .database()
-        //   // .ref("/path/to/ref")
-        //   .ref("/data");
-        // let postRef = ref.child("data").childByAutoId();
-        // postRef.child("name").setValue("some name");
-        // postRef.child("age").setValue(44);
-      }
-
-      function doUserLogin() {
-        firebase
-          .auth()
-          .signInWithEmailAndPassword(emailEle.value, passwordEle.value)
-          .then(userCredential => {
-            // Signed in
-            var user = userCredential.user;
-            console.log('user', user);
-            emailEle.value = '';
-            passwordEle.value = '';
-            loginFormEle.style.display = 'none';
-            firebase
-              .database()
-              // .ref("/path/to/ref")
-              .ref('/data')
-              .on('value', snapshot => {
-                console.log('database-value-snapshot', snapshot);
-                console.log('---------------------------');
-                console.log(snapshot.val());
-              });
-          })
-          .catch(error => {
-            var errorCode = error.code;
-            var errorMessage = error.message;
-          });
-      }
-    </script>
-
-    <script type="module" src="./out-tsc/src/rbb-cleaning.js"></script>
+    <script type="module" src="./out-tsc/src/index.js"></script>
+    <!-- <script type="module" src="./out-tsc/src/rbb-cleaning.js"></script> -->
   </body>
 </html>
