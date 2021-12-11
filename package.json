@@ -10,9 +10,11 @@
     "build": "rimraf public && tsc && rollup -c rollup.config.js && npm run analyze -- --exclude public",
     "start:build": "web-dev-server --root-dir public --app-index index.html --open",
     "analyze": "cem analyze --litelement",
-    "start": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\""
+    "start": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
+    "prettier:write": "prettier --write"
   },
   "dependencies": {
+    "firebase": "^9.6.1",
     "lit": "^2.0.2"
   },
   "devDependencies": {
@@ -43,6 +45,9 @@
     "typescript": "^4.5.2"
   },
   "eslintConfig": {
+    "globals": {
+      "globalThis": true
+    },
     "parser": "@typescript-eslint/parser",
     "extends": [
       "@open-wc",
