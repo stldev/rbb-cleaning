@@ -11,6 +11,4 @@ const firebaseConfig: FirebaseOptions = {
   appId: '1:751365085821:web:88bf4fd16ae090b1036f14',
 };
 
-globalThis.fbApp = initializeApp(firebaseConfig);
-// const fbAuth = getAuth(globalThis.fbApp);
-// const fbDb = getDatabase(globalThis.fbApp);
+initializeApp(firebaseConfig);
