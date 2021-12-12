@@ -1,6 +1,11 @@
 import { LitElement, html, css } from 'lit';
 import { property, customElement, query } from 'lit/decorators.js';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut,
+  UserCredential,
+} from 'firebase/auth';
 import { getDatabase, ref, onValue } from 'firebase/database';
 
 // const logo = new URL('../../assets/open-wc-logo.svg', import.meta.url).href;
@@ -9,17 +14,19 @@ import { getDatabase, ref, onValue } from 'firebase/database';
 export class RbbCleaning extends LitElement {
   @property({ type: String }) title = 'RBB-Cleaning';
 
-  @property({ type: Object }) fbAuth = null;
+  @property({ type: Boolean }) hasAuth = false;
 
-  @property({ type: Object }) fbDb = null;
+  @property({ type: String }) userEmail = '';
 
   @query('#loginForm') loginFormEle: HTMLDivElement;
+
+  @query('#itemsSection') itemsSection: HTMLElement;
 
   @query('#userEmail') emailEle: HTMLInputElement;
 
   @query('#userPass') passwordEle: HTMLInputElement;
 
-  @query('#emailDisplay') emailDisplayEle: HTMLHeadElement;
+  @query('#errorMessage') errorMessage: HTMLParagraphElement;
 
   static styles = css`
     :host {
@@ -39,19 +46,11 @@ export class RbbCleaning extends LitElement {
       flex-grow: 1;
     }
 
-    .app-footer {
-      font-size: calc(12px + 0.5vmin);
-      align-items: center;
-    }
-
-    .app-footer a {
-      margin-left: 5px;
-    }
-
-    #message {
+    #message,
+    #itemsSection {
       background: white;
       max-width: 360px;
-      margin: 100px auto 16px;
+      margin: 50px auto 16px;
       padding: 32px 24px;
       border-radius: 3px;
     }
@@ -82,6 +81,7 @@ export class RbbCleaning extends LitElement {
       padding: 16px;
       border-radius: 4px;
     }
+    #itemsSection,
     #message,
     #message a {
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
@@ -89,62 +89,87 @@ export class RbbCleaning extends LitElement {
   `;
 
   firstUpdated() {
-    this.fbAuth = getAuth(globalThis.fbApp);
-    this.fbDb = getDatabase(globalThis.fbApp);
-    // const loginFormEle = document.getElementById('loginForm');
-    // const emailEle = document.getElementById('userEmail');
-    // const passwordEle = document.getElementById('userPass');
-    // const emailDisplayEle = document.getElementById('emailDisplay');
-
-    this.fbAuth.onAuthStateChanged(user => {
+    getAuth().onAuthStateChanged(user => {
       console.log('onAuthStateChanged-user', user);
 
       if (user?.email) {
-        this.emailDisplayEle.innerHTML = user.email;
+        this.userEmail = user.email;
+        this.hasAuth = true;
       } else {
-        this.loginFormEle.style.display = 'block';
+        this.hasAuth = false;
       }
     });
 
-    const rbbCleaningDataRef = ref(this.fbDb, '/data');
+    const rbbCleaningDataRef = ref(getDatabase(), '/data');
     onValue(rbbCleaningDataRef, snapshot => {
-      console.log('database-value-snapshot', snapshot);
-      console.log('---------------------------');
+      console.log('database-value-snapshot-----', snapshot);
       console.log(snapshot.val());
     });
   }
 
-  private doUserLogin() {
-    signInWithEmailAndPassword(
-      this.fbAuth,
+  private handleAuthLoginDisplay() {
+    if (this.hasAuth) {
+      this.loginFormEle.style.display = 'none';
+      this.itemsSection.style.display = 'block';
+    } else {
+      this.loginFormEle.style.display = 'block';
+      this.itemsSection.style.display = 'none';
+    }
+  }
+
+  protected updated(
+    _changedProps: Map<string | number | symbol, unknown>
+  ): void {
+    if (_changedProps.has('hasAuth')) this.handleAuthLoginDisplay();
+  }
+
+  private async doUserLogin() {
+    this.errorMessage.innerHTML = '';
+    this.errorMessage.style.display = 'none';
+    const signInResult: UserCredential = await signInWithEmailAndPassword(
+      getAuth(),
       this.emailEle.value,
       this.passwordEle.value
-    )
-      .then(userCredential => {
-        // Signed in
-        const { user } = userCredential;
-        console.log('user', user);
-        this.emailEle.value = '';
-        this.passwordEle.value = '';
-        this.loginFormEle.style.display = 'none';
+    ).catch(err => {
+      this.errorMessage.innerHTML = err.message || 'sign in error.';
+      this.errorMessage.style.display = 'block';
+      this.hasAuth = false;
+      return null;
+    });
 
-        const rbbCleaningDataRef = ref(this.fbDb, '/data');
-        onValue(rbbCleaningDataRef, snapshot => {
-          console.log('database-value-snapshot-222', snapshot);
-          console.log('---------------------------2222');
-          console.log(snapshot.val());
-        });
-      })
-      .catch(error => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log('errorCode', errorCode);
-        console.log('errorMessage', errorMessage);
+    if (signInResult?.user) {
+      const { user } = signInResult;
+      console.log('user', user);
+      this.emailEle.value = '';
+      this.passwordEle.value = '';
+      this.loginFormEle.style.display = 'none';
+      this.hasAuth = true;
+
+      const rbbCleaningDataRef = ref(getDatabase(), '/data');
+      onValue(rbbCleaningDataRef, snapshot => {
+        console.log('database-value-snapshot-----222', snapshot);
+        console.log(snapshot.val());
       });
+    } else {
+      this.hasAuth = false;
+    }
   }
 
   private addTheItem() {
     console.log(`${this.title} - addTheItem`);
+  }
+
+  private async signMeOut() {
+    await signOut(getAuth());
+    console.log(`${this.title} - signMeOut`);
+  }
+
+  private authDisplay() {
+    if (this.hasAuth) {
+      return html`${this.userEmail}
+        <button type="button" @click="${this.signMeOut}">signOut</button>`;
+    }
+    return html`anonymous`;
   }
 
   render() {
@@ -152,10 +177,9 @@ export class RbbCleaning extends LitElement {
       <main>
         <h1>${this.title}</h1>
         <section id="message">
-          <h2 id="emailDisplay">anonymous</h2>
-          <hr />
-          <button type="button" @click="${this.addTheItem}">Add Item</button>
+          <h2>${this.authDisplay()}</h2>
           <div id="loginForm" style="display: none">
+            <p id="errorMessage" style="color:red; display: none;">Error</p>
             email: <input id="userEmail" type="text" /> <br />
             pass: <input id="userPass" type="password" /> <br />
             <button type="button" @click="${this.doUserLogin}">
@@ -163,27 +187,10 @@ export class RbbCleaning extends LitElement {
             </button>
           </div>
         </section>
-
-        <p>Edit <code>src/RbbCleaning.ts</code> and save to reload.</p>
-        <a
-          class="app-link"
-          href="https://open-wc.org/guides/developing-components/code-examples"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Code examples
-        </a>
+        <section id="itemsSection" style="display: none">
+          <button type="button" @click="${this.addTheItem}">Add Item</button>
+        </section>
       </main>
-
-      <p class="app-footer">
-        🚽 Made with love by
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://github.com/open-wc"
-          >open-wc</a
-        >.
-      </p>
     `;
   }
 }
