@@ -39,7 +39,7 @@ export default {
             <meta name="apple-mobile-web-app-title" content="RbbCleaning" />
             <link rel="shortcut icon" href="favicon.ico" />
             <link rel="icon" href="favicon.svg" />
-            <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+            <link rel="apple-touch-icon" href="apple-touch-icon2.png" />
             <link rel="manifest" href="./manifest.webmanifest" />
             </head>`
           ),
