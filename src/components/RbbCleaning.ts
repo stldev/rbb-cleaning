@@ -165,7 +165,7 @@ export class RbbCleaning extends LitElement {
           <h2>${this.authDisplay()}</h2>
           <div id="loginForm" style="display: none">
             <p id="errorMessage" style="color:red; display: none;">Error</p>
-            email: <input id="userEmail" type="text" /> <br />
+            email: <input id="userEmail" type="email" /> <br />
             pass: <input id="userPass" type="password" /> <br />
             <button type="button" @click="${this.doUserLogin}">
               doUserLogin
