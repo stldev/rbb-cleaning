@@ -22,7 +22,7 @@ export default {
     copy({
       targets: [
         { src: 'manifest.webmanifest', dest: './public' },
-        { src: 'icons/*.png', dest: './public' },
+        { src: 'assets/*.png', dest: './public' },
         { src: '*.svg', dest: './public' },
         { src: '*.ico', dest: './public' },
       ],
