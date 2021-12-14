@@ -22,6 +22,8 @@ export class RbbCleaning extends LitElement {
 
   @query('#itemsSection') itemsSection: HTMLElement;
 
+  @query('#itemsSection ol') itemsSectionOL: HTMLOListElement;
+
   @query('#userEmail') emailEle: HTMLInputElement;
 
   @query('#userPass') passwordEle: HTMLInputElement;
@@ -49,9 +51,9 @@ export class RbbCleaning extends LitElement {
     #message,
     #itemsSection {
       background: white;
-      max-width: 360px;
-      margin: 50px auto 16px;
-      padding: 32px 24px;
+      max-width: 370px;
+      margin: 25px auto 8px;
+      padding: 16px 12px;
       border-radius: 3px;
     }
     #message h2 {
@@ -60,30 +62,13 @@ export class RbbCleaning extends LitElement {
       font-size: 16px;
       margin: 0 0 8px;
     }
-    #message h1 {
-      font-size: 22px;
-      font-weight: 300;
-      color: rgba(0, 0, 0, 0.6);
-      margin: 0 0 16px;
-    }
     #message p {
       line-height: 140%;
       margin: 16px 0 24px;
       font-size: 14px;
     }
-    #message a {
-      display: block;
-      text-align: center;
-      background: #039be5;
-      text-transform: uppercase;
-      text-decoration: none;
-      color: white;
-      padding: 16px;
-      border-radius: 4px;
-    }
     #itemsSection,
-    #message,
-    #message a {
+    #message {
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     }
   `;
@@ -156,7 +141,7 @@ export class RbbCleaning extends LitElement {
   }
 
   private addTheItem() {
-    console.log(`${this.title} - addTheItem`);
+    this.itemsSectionOL.insertAdjacentHTML('beforeend', '<li>item</li>');
   }
 
   private async signMeOut() {
@@ -189,6 +174,7 @@ export class RbbCleaning extends LitElement {
         </section>
         <section id="itemsSection" style="display: none">
           <button type="button" @click="${this.addTheItem}">Add Item</button>
+          <ol></ol>
         </section>
       </main>
     `;

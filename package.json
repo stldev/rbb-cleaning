@@ -14,6 +14,7 @@
     "prettier:write": "prettier --write"
   },
   "dependencies": {
+    "@vaadin/router": "^1.7.4",
     "firebase": "^9.6.1",
     "lit": "^2.0.2"
   },
