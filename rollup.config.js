@@ -32,16 +32,9 @@ export default {
       transformHtml: [
         html2 =>
           html2.replace(
-            '</head>',
-            `<meta name="theme-color" content="#344675" />
-            <meta name="apple-mobile-web-app-capable" content="yes" />
-            <meta name="apple-mobile-web-app-status-bar-style" content="#344675" />
-            <meta name="apple-mobile-web-app-title" content="RbbCleaning" />
-            <link rel="shortcut icon" href="favicon.ico" />
-            <link rel="icon" href="favicon.svg" />
-            <link rel="apple-touch-icon" href="apple-touch-icon2.png" />
-            <link rel="manifest" href="./manifest.webmanifest" />
-            </head>`
+            '<!-- MANIFEST -->',
+            `<link rel="apple-touch-icon" href="apple-touch-icon2.png" />
+            <link rel="manifest" href="./manifest.webmanifest" />`
           ),
       ],
       minify: true,

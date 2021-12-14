@@ -1,5 +1,5 @@
 import { FirebaseOptions, initializeApp } from 'firebase/app';
-import './RbbCleaning';
+import './router';
 
 const firebaseConfig: FirebaseOptions = {
   apiKey: 'AIzaSyBkvTfAcVuKxT_uLc6wj66I4uWppK-hJYE',
